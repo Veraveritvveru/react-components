@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Character } from '../types';
 import styles from './CharacterCard.module.scss';
 
@@ -13,6 +12,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
         src={character.image}
         alt={character.name}
         className={styles.cardImg}
+        loading="lazy"
       />
       <div className={styles.cardInfo}>
         <h3 className={styles.cardName}>{character.name}</h3>

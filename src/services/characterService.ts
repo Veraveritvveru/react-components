@@ -3,26 +3,33 @@ import type { Character } from '../types';
 const BASE_URL = 'https://rickandmortyapi.com/api/character';
 
 export const fetchCharacters = async (
-  searchQuery: string = ''
-): Promise<Character[]> => {
+  searchQuery: string = '',
+  page: number
+): Promise<{ results: Character[]; totalPages: number }> => {
   const trimmedQuery = searchQuery.trim();
 
-  const url = trimmedQuery
-    ? `${BASE_URL}/?name=${encodeURIComponent(trimmedQuery)}`
-    : BASE_URL;
+  const params = new URLSearchParams({
+    page: String(page),
+  });
 
+  if (trimmedQuery) {
+    params.set('name', trimmedQuery);
+  }
+
+  const url = `${BASE_URL}/?${params.toString()}`;
   const response = await fetch(url);
 
-  const data = await response.json();
-  console.log(data.results);
-
-  if (data.error) {
-    console.log(data.error);
-    return [];
+  if (response.status === 404) {
+    return { results: [], totalPages: 0 };
   }
+
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return Array.isArray(data.results) ? data.results : [];
+  return {
+    results: Array.isArray(data.results) ? data.results : [],
+    totalPages: data.info?.pages ?? 1,
+  };
 };

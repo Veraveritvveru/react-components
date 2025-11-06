@@ -6,6 +6,7 @@ import Header from '../components/Header/Header';
 import Loader from '../components/Loader/Loader';
 import CardList from '../components/CardList/CardList';
 import NoResults from '../components/NoResults/NoResults';
+import Pagination from '../components/Pagination/Pagination';
 
 const ResultsPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -13,13 +14,21 @@ const ResultsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadCharacters = async (inputValue: string = ''): Promise<void> => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  const loadCharacters = async (
+    value: string = '',
+    page = 1
+  ): Promise<void> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const results = await fetchCharacters(inputValue);
+      const { results, totalPages } = await fetchCharacters(value, page);
       setSearchResults(results);
+      setTotalPages(totalPages);
+      setCurrentPage(page);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       setError(message);
@@ -41,7 +50,13 @@ const ResultsPage: React.FC = () => {
   ): Promise<void> => {
     e.preventDefault();
     loadCharacters(inputValue);
-    setInputValue('');
+  };
+
+  const handlePageChange = async (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+
+    await loadCharacters(inputValue, page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -55,7 +70,17 @@ const ResultsPage: React.FC = () => {
       {isLoading ? (
         <Loader />
       ) : searchResults.length ? (
-        <CardList results={searchResults} />
+        <>
+          <CardList results={searchResults} />
+
+          <div>
+            <Pagination
+              current={currentPage}
+              total={totalPages}
+              onChange={handlePageChange}
+            />
+          </div>
+        </>
       ) : (
         <NoResults />
       )}

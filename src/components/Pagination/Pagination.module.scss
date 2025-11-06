@@ -1,0 +1,48 @@
+@use '../../global-styles/variables.scss' as *;
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.button {
+  color: black;
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
+
+.button:hover {
+  background: $button-hover-color;
+}
+
+.number {
+  color: black;
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.number:hover {
+  background: $button-hover-color;
+}
+
+.currentNumber {
+  color: black;
+  background: $button-hover-color;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border-radius: 50%;
+}
