@@ -73,7 +73,7 @@ const ResultsPage: React.FC = () => {
       ) : searchResults.length ? (
         <>
           {/* <CardList results={searchResults} /> */}
-          <CardList2 />
+          <CardList2 results={searchResults} />
           <div>
             <Pagination
               current={currentPage}
